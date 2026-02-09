@@ -143,7 +143,7 @@ async function submitEvaluation() {
     formData.append("state", state);
     formData.append("file", fileInput.files[0]);
 
-    const res = await fetch("http://127.0.0.1:5000/evaluate", {
+    const res = await fetch("https://rankpred-1.onrender.com/evaluate", {
       method: "POST",
       body: formData
     });

@@ -12,7 +12,7 @@ if (!exam || !roll) {
   statusMsg.textContent = "Result details not provided.";
 } else {
   fetch(
-    `http://127.0.0.1:5000/result?exam=${encodeURIComponent(exam)}&roll=${encodeURIComponent(roll)}`
+    `https://rankpred-1.onrender.com/result?exam=${encodeURIComponent(exam)}&roll=${encodeURIComponent(roll)}`
   )
     .then(res => res.json())
     .then(data => {
@@ -121,7 +121,7 @@ function downloadPDF() {
   }
 
   window.open(
-    `http://127.0.0.1:5000/result-pdf?exam=${encodeURIComponent(exam)}&roll=${encodeURIComponent(roll)}`,
+    `https://rankpred-1.onrender.com/result-pdf?exam=${encodeURIComponent(exam)}&roll=${encodeURIComponent(roll)}`,
     "_blank"
   );
 }

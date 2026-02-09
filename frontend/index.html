@@ -22,7 +22,7 @@ function goToEvaluate(examName) {
   window.location.href = "evaluate.html";
 }
 
-fetch("http://127.0.0.1:5000/admin/exams")
+fetch("https://rankpred-1.onrender.com/admin/exams")
   .then(res => res.json())
   .then(exams => {
     const grid = document.getElementById("examGrid");
