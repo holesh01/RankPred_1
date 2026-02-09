@@ -170,3 +170,12 @@ async function submitEvaluation() {
     statusEl.textContent = "Evaluation failed: " + err.message;
   }
 }
+fetch("https://rankpred-1.onrender.com/admin/create-exam", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "X-ADMIN-KEY": "supersecret123"
+  },
+  body: JSON.stringify(data)
+});
+
