@@ -174,7 +174,7 @@ fetch("https://rankpred-1.onrender.com/admin/create-exam", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "X-ADMIN-KEY": "supersecret123"
+    "X-ADMIN-KEY": "Abc@1183"
   },
   body: JSON.stringify(data)
 });
