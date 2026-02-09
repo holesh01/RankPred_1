@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin | RankPred</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>RankPred Admin</h1>
+  <p>Create, view, and manage exams</p>
+</header>
+
+<div class="container">
+
+  <!-- CREATE EXAM -->
+  <h2>Create Exam</h2>
+
+  <label>Exam Name</label>
+  <input type="text" id="examName" placeholder="SSC CGL 2024">
+
+  <label>Marks for Correct</label>
+  <input type="number" id="correct" value="2">
+
+  <label>Marks for Wrong</label>
+  <input type="number" id="wrong" value="-0.5">
+
+  <label>Marks for NA</label>
+  <input type="number" id="na" value="0">
+
+  <!-- SUBJECT SECTION -->
+  <h3>Add Subjects</h3>
+
+  <table border="1" width="100%" id="subjectTable">
+    <thead>
+      <tr>
+        <th>Subject Name</th>
+        <th>Max Marks</th>
+        <th>Count in Total</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Rows added dynamically -->
+    </tbody>
+  </table>
+
+  <br>
+  <button type="button" onclick="addSubjectRow()">+ Add Subject</button>
+
+  <div class="btn-row" style="margin-top:20px;">
+    <button class="primary" onclick="createExam()">Create Exam</button>
+    <button class="secondary" onclick="location.reload()">Admin Home</button>
+  </div>
+
+  <div id="successMsg" style="margin-top:15px;"></div>
+
+  <!-- EXAM LIST -->
+  <h3 style="margin-top:40px;">All Created Exams</h3>
+
+  <table class="subject-table">
+    <thead>
+      <tr>
+        <th>Exam Name</th>
+        <th>Correct</th>
+        <th>Wrong</th>
+        <th>NA</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="examTable">
+      <!-- Filled by JS -->
+    </tbody>
+  </table>
+
+</div>
+
+<script>
+const API_BASE = "http://127.0.0.1:5000";
+
+/* ---------- ADD SUBJECT ROW ---------- */
+function addSubjectRow() {
+  const tbody = document.querySelector("#subjectTable tbody");
+
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td>
+      <input type="text" class="sub-name" placeholder="Subject name" required>
+    </td>
+    <td>
+      <input type="number" class="sub-marks" placeholder="50" required>
+    </td>
+    <td style="text-align:center">
+      <input type="checkbox" class="sub-count" checked>
+    </td>
+    <td>
+      <button type="button" onclick="this.closest('tr').remove()">Remove</button>
+    </td>
+  `;
+
+  tbody.appendChild(row);
+}
+
+/* ---------- CREATE EXAM ---------- */
+async function createExam() {
+  const exam_name = document.getElementById("examName").value.trim();
+  const correct = Number(document.getElementById("correct").value);
+  const wrong = Number(document.getElementById("wrong").value);
+  const na = Number(document.getElementById("na").value);
+
+  if (!exam_name) {
+    alert("Exam name required");
+    return;
+  }
+
+  const subjects = [];
+  document.querySelectorAll("#subjectTable tbody tr").forEach(row => {
+    subjects.push({
+      name: row.querySelector(".sub-name").value.trim(),
+      max_marks: Number(row.querySelector(".sub-marks").value),
+      count_in_total: row.querySelector(".sub-count").checked
+    });
+  });
+
+  if (subjects.length === 0) {
+    alert("Add at least one subject");
+    return;
+  }
+
+  const payload = {
+    exam_name,
+    correct,
+    wrong,
+    na,
+    subjects
+  };
+
+  const res = await fetch(API_BASE + "/admin/create-exam", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  const data = await res.json();
+
+  if (data.status === "success") {
+    document.getElementById("successMsg").innerHTML =
+      "<span style='color:green;'>✅ Exam created successfully</span>";
+    loadExams();
+  } else {
+    document.getElementById("successMsg").innerHTML =
+      "<span style='color:red;'>❌ Failed to create exam</span>";
+  }
+}
+
+/* ---------- LOAD EXAMS ---------- */
+async function loadExams() {
+  const res = await fetch(API_BASE + "/admin/exams");
+  const exams = await res.json();
+
+  const table = document.getElementById("examTable");
+  table.innerHTML = "";
+
+  if (exams.length === 0) {
+    table.innerHTML =
+      "<tr><td colspan='5'>No exams created yet</td></tr>";
+    return;
+  }
+
+  exams.forEach(exam => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${exam.exam_name}</td>
+      <td>${exam.correct ?? "-"}</td>
+      <td>${exam.wrong ?? "-"}</td>
+      <td>${exam.na ?? "-"}</td>
+      <td>
+        <button class="secondary"
+          onclick="deleteExam('${exam.exam_name}')">
+          Delete
+        </button>
+      </td>
+    `;
+    table.appendChild(row);
+  });
+}
+
+/* ---------- DELETE EXAM ---------- */
+async function deleteExam(examName) {
+  if (!confirm("Delete exam: " + examName + " ?")) return;
+
+  await fetch(API_BASE + "/admin/delete-exam", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ exam_name: examName })
+  });
+
+  loadExams();
+}
+
+/* ---------- INIT ---------- */
+loadExams();
+</script>
+
+</body>
+</html>

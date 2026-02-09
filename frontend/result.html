@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Result | RankPred</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>RankPred</h1>
+</header>
+
+<div class="container">
+
+  <p id="statusMsg" style="text-align:center;margin-bottom:15px;">
+    Loading result...
+  </p>
+
+  <!-- CANDIDATE INFO -->
+  <div class="candidate-card">
+    <h2 id="examName"></h2>
+    <p><strong>Name:</strong> <span id="rName"></span></p>
+    <p><strong>Roll No:</strong> <span id="rRoll"></span></p>
+    <p><strong>Category:</strong> <span id="rCategory"></span></p>
+    <p><strong>State:</strong> <span id="rState"></span></p>
+    <p><b>Exam Date:</b> <span id="examDate">-</span></p>
+    <p><b>Shift Timing:</b> <span id="shiftTime">-</span></p>
+
+  </div>
+
+  <!-- COUNTED SUBJECTS -->
+  <h2 style="text-align:center;margin-top:30px;">
+  Subject Wise Performance
+</h2>
+
+<table class="subject-table">
+  <thead>
+    <tr>
+      <th>Subject</th>
+      <th>Attempt</th>
+      <th>NA</th>
+      <th>R</th>
+      <th>W</th>
+      <th>Marks</th>
+    </tr>
+  </thead>
+  <tbody id="subjectTableBody"></tbody>
+</table>
+
+
+  <!-- FINAL MARKS -->
+  <h2 style="text-align:center;margin-top:20px;">
+    Final Marks: <span id="finalMarks"></span>
+  </h2>
+  <div class="rank-card">
+    <div class="rank-title">Shift Rank</div>
+    <div class="rank-value">
+      <span id="shiftRank">-</span>/<span id="totalCandidates">-</span>
+    </div>
+  </div>
+
+
+
+  <button class="primary" onclick="downloadPDF()">Download PDF</button>
+
+
+
+</div>
+
+<script src="result.js"></script>
+</body>
+</html>
