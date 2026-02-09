@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <title>RankPred</title>
@@ -40,6 +40,61 @@ fetch("https://rankpred-1.onrender.com/admin/exams")
       // ✅ FIX HERE
       card.textContent = exam.exam_name;
 
+      card.onclick = () => goToEvaluate(exam.exam_name);
+      grid.appendChild(card);
+    });
+  })
+  .catch(() => {
+    document.getElementById("examGrid").innerHTML =
+      "<p>Failed to load exams</p>";
+  });
+</script>
+
+</body>
+</html> -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RankPred</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>RankPred</h1>
+  <p>Predict your rank. Know your position.</p>
+</header>
+
+<div class="container">
+  <h2>Select Your Exam</h2>
+  <div class="exam-grid" id="examGrid"></div>
+</div>
+
+<script>
+function goToEvaluate(examName) {
+  localStorage.setItem("selectedExam", examName);
+  window.location.href = "evaluate.html";
+}
+
+// ✅ PUBLIC EXAMS ENDPOINT
+fetch("https://rankpred-1.onrender.com/exams")
+  .then(res => {
+    if (!res.ok) throw new Error("Failed");
+    return res.json();
+  })
+  .then(exams => {
+    const grid = document.getElementById("examGrid");
+    grid.innerHTML = "";
+
+    if (!exams || exams.length === 0) {
+      grid.innerHTML = "<p>No exams available</p>";
+      return;
+    }
+
+    exams.forEach(exam => {
+      const card = document.createElement("div");
+      card.className = "exam-card";
+      card.textContent = exam.exam_name;
       card.onclick = () => goToEvaluate(exam.exam_name);
       grid.appendChild(card);
     });
